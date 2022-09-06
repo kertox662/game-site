@@ -1,0 +1,25 @@
+linters:
+  disable:
+    - ineffassign
+  enable:
+    - bodyclose
+    - containedctx
+    - contextcheck
+    - durationcheck
+    - errname
+    - errorlint
+    - exhaustive
+    - exportloopref
+    - gofmt
+    - gosec
+    - lll
+    - nilerr
+    - nolintlint
+    - nonamedreturns
+    - tenv
+    - unconvert
+
+linters-settings:
+  lll:
+    line-length: 120
+    tab-width: 4
