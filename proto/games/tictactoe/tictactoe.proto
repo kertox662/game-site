@@ -43,6 +43,6 @@ message MakeMoveResponse {
 
 service TicTacToeService {
   rpc CreateGame(CreateGameRequest) returns (CreateGameResponse);
-  rpc GetGameData(GetGameDataRequest) returns (CreateGameResponse);
+  rpc GetGameData(GetGameDataRequest) returns (GetGameDataResponse);
   rpc MakeMove(MakeMoveRequest) returns (MakeMoveResponse);
 }
