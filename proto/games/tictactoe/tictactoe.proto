@@ -1,0 +1,47 @@
+syntax = "proto3";
+package tictactoe;
+
+import "github.com/kertox662/game-site/games/tictactoe/board.proto";
+
+option go_package = "github.com/kertox662/game-site/games/tictactoe";
+
+message Move {
+  int32 row = 1;
+  int32 col = 2;
+}
+
+message CreateGameRequest {
+  int32 max_players = 1;
+  int32 board_size = 2;
+  int32 connect_target = 3;
+}
+
+message CreateGameResponse {
+  string game_id = 1;
+}
+
+message GetGameDataRequest {
+  string game_id = 1;
+}
+
+message GetGameDataResponse {
+  Board data = 1;
+  int32 player_count = 2;
+  repeated string players = 3;
+  int32 current_turn = 4;
+}
+
+message MakeMoveRequest {
+  string game_id = 1;
+  int32 player = 2;
+  Move move = 3;
+}
+
+message MakeMoveResponse {
+}
+
+service TicTacToeService {
+  rpc CreateGame(CreateGameRequest) returns (CreateGameResponse);
+  rpc GetGameData(GetGameDataRequest) returns (CreateGameResponse);
+  rpc MakeMove(MakeMoveRequest) returns (MakeMoveResponse);
+}

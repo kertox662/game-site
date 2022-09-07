@@ -1,0 +1,14 @@
+syntax = "proto3";
+package tictactoe;
+
+option go_package = "github.com/kertox662/game-site/games/tictactoe";
+
+message BoardRow {
+  repeated int32 cells = 1;
+  int32 length = 2;
+}
+
+message Board {
+  repeated BoardRow cells = 1;
+  int32 dimension = 2;
+}
