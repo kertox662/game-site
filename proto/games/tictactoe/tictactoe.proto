@@ -1,9 +1,9 @@
 syntax = "proto3";
 package tictactoe;
 
-import "github.com/kertox662/game-site/games/tictactoe/board.proto";
+import "proto/games/tictactoe/board.proto";
 
-option go_package = "github.com/kertox662/game-site/games/tictactoe";
+option go_package = "github.com/kertox662/game-site/proto/games/tictactoe";
 
 message Move {
   int32 row = 1;
