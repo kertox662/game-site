@@ -28,7 +28,7 @@ const (
 // TicTacToeServiceClient is a client for the tictactoe.TicTacToeService service.
 type TicTacToeServiceClient interface {
 	CreateGame(context.Context, *connect_go.Request[tictactoe.CreateGameRequest]) (*connect_go.Response[tictactoe.CreateGameResponse], error)
-	GetGameData(context.Context, *connect_go.Request[tictactoe.GetGameDataRequest]) (*connect_go.Response[tictactoe.CreateGameResponse], error)
+	GetGameData(context.Context, *connect_go.Request[tictactoe.GetGameDataRequest]) (*connect_go.Response[tictactoe.GetGameDataResponse], error)
 	MakeMove(context.Context, *connect_go.Request[tictactoe.MakeMoveRequest]) (*connect_go.Response[tictactoe.MakeMoveResponse], error)
 }
 
@@ -47,7 +47,7 @@ func NewTicTacToeServiceClient(httpClient connect_go.HTTPClient, baseURL string,
 			baseURL+"/tictactoe.TicTacToeService/CreateGame",
 			opts...,
 		),
-		getGameData: connect_go.NewClient[tictactoe.GetGameDataRequest, tictactoe.CreateGameResponse](
+		getGameData: connect_go.NewClient[tictactoe.GetGameDataRequest, tictactoe.GetGameDataResponse](
 			httpClient,
 			baseURL+"/tictactoe.TicTacToeService/GetGameData",
 			opts...,
@@ -63,7 +63,7 @@ func NewTicTacToeServiceClient(httpClient connect_go.HTTPClient, baseURL string,
 // ticTacToeServiceClient implements TicTacToeServiceClient.
 type ticTacToeServiceClient struct {
 	createGame  *connect_go.Client[tictactoe.CreateGameRequest, tictactoe.CreateGameResponse]
-	getGameData *connect_go.Client[tictactoe.GetGameDataRequest, tictactoe.CreateGameResponse]
+	getGameData *connect_go.Client[tictactoe.GetGameDataRequest, tictactoe.GetGameDataResponse]
 	makeMove    *connect_go.Client[tictactoe.MakeMoveRequest, tictactoe.MakeMoveResponse]
 }
 
@@ -73,7 +73,7 @@ func (c *ticTacToeServiceClient) CreateGame(ctx context.Context, req *connect_go
 }
 
 // GetGameData calls tictactoe.TicTacToeService.GetGameData.
-func (c *ticTacToeServiceClient) GetGameData(ctx context.Context, req *connect_go.Request[tictactoe.GetGameDataRequest]) (*connect_go.Response[tictactoe.CreateGameResponse], error) {
+func (c *ticTacToeServiceClient) GetGameData(ctx context.Context, req *connect_go.Request[tictactoe.GetGameDataRequest]) (*connect_go.Response[tictactoe.GetGameDataResponse], error) {
 	return c.getGameData.CallUnary(ctx, req)
 }
 
@@ -85,7 +85,7 @@ func (c *ticTacToeServiceClient) MakeMove(ctx context.Context, req *connect_go.R
 // TicTacToeServiceHandler is an implementation of the tictactoe.TicTacToeService service.
 type TicTacToeServiceHandler interface {
 	CreateGame(context.Context, *connect_go.Request[tictactoe.CreateGameRequest]) (*connect_go.Response[tictactoe.CreateGameResponse], error)
-	GetGameData(context.Context, *connect_go.Request[tictactoe.GetGameDataRequest]) (*connect_go.Response[tictactoe.CreateGameResponse], error)
+	GetGameData(context.Context, *connect_go.Request[tictactoe.GetGameDataRequest]) (*connect_go.Response[tictactoe.GetGameDataResponse], error)
 	MakeMove(context.Context, *connect_go.Request[tictactoe.MakeMoveRequest]) (*connect_go.Response[tictactoe.MakeMoveResponse], error)
 }
 
@@ -121,7 +121,7 @@ func (UnimplementedTicTacToeServiceHandler) CreateGame(context.Context, *connect
 	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("tictactoe.TicTacToeService.CreateGame is not implemented"))
 }
 
-func (UnimplementedTicTacToeServiceHandler) GetGameData(context.Context, *connect_go.Request[tictactoe.GetGameDataRequest]) (*connect_go.Response[tictactoe.CreateGameResponse], error) {
+func (UnimplementedTicTacToeServiceHandler) GetGameData(context.Context, *connect_go.Request[tictactoe.GetGameDataRequest]) (*connect_go.Response[tictactoe.GetGameDataResponse], error) {
 	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("tictactoe.TicTacToeService.GetGameData is not implemented"))
 }
 
