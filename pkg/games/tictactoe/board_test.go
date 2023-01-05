@@ -25,16 +25,6 @@ func TestFindConnect(t *testing.T) {
 			},
 			toConnect: 2,
 		}, {
-			name: "Single",
-			board: [][]int{
-				{1, 1, 1},
-				{0, 0, 0},
-				{0, 0, 0},
-			},
-			toConnect:  3,
-			player:     1,
-			hasConnect: true,
-		}, {
 			name: "Short",
 			board: [][]int{
 				{1, 1, 0},
@@ -235,6 +225,18 @@ func TestFindConnect(t *testing.T) {
 			},
 			toConnect:  5,
 			player:     2,
+			hasConnect: true,
+		}, {
+			name: "Check Premature Break",
+			board: [][]int{
+				{0, 0, 0, 0, 0},
+				{0, 0, 0, 1, 0},
+				{0, 0, 0, 1, 0},
+				{0, 0, 0, 1, 0},
+				{0, 0, 0, 1, 0},
+			},
+			toConnect:  4,
+			player:     1,
 			hasConnect: true,
 		},
 	}
@@ -497,7 +499,7 @@ func BenchmarkRandomBoard(b *testing.B) {
 	rand.Seed(time.Now().Unix())
 	for i := 0; i < 30; i++ {
 		for j := 0; j < 30; j++ {
-			board.makeMove(i, j, rand.Int()%4+1)
+			board.makeMove(i, j, rand.Int()%4+1) //nolint:gosec
 		}
 	}
 	b.Run("30x30 Random, connect 7", func(b *testing.B) {
