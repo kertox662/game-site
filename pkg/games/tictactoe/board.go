@@ -60,7 +60,7 @@ func (b board) findConnect(length int) (int, bool) {
 	for c := 0; c < b.size(); c++ {
 		checking = 0
 		for r := 0; r < b.size(); r++ {
-			if length-found > b.size()-c {
+			if length-found > b.size()-r {
 				break
 			}
 
@@ -166,6 +166,7 @@ func (b *board) toProto() *tictactoe.Board {
 	for i := 0; i < b.size(); i++ {
 		row := new(tictactoe.BoardRow)
 		row.Cells = make([]int32, b.size())
+		row.Length = int32(b.size())
 		for j := 0; j < b.size(); j++ {
 			row.Cells[j] = int32((*b)[i][j])
 		}
