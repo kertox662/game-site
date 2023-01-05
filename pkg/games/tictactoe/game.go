@@ -8,9 +8,10 @@ import (
 )
 
 const (
-	EMPTY_PLAYER = 0
+	EMPTY_PLAYER = 0 // Value for a blank space on the board
 )
 
+// Error values for broken rules
 var (
 	ErrIncorrectPlayerTurn = errors.New("not the given player's turn")
 	ErrGameConcluded       = errors.New("game is already done")
@@ -18,6 +19,7 @@ var (
 	ErrNonEmptySpace       = errors.New("move space in not empty")
 )
 
+// game is the data and configuration of the tic tac toe game
 type game struct {
 	board         board
 	boardSize     int
@@ -59,6 +61,8 @@ func (g *game) toProto() *tictactoe.GetGameDataResponse {
 	}
 }
 
+// makeMove makes the move and checks to see if the move breaks any rules
+// If it does, it returns an error
 func (g *game) makeMove(player, row, col int) error {
 	if g.winner != EMPTY_PLAYER { // Check if winner exists
 		return ErrGameConcluded

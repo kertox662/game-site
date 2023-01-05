@@ -14,35 +14,49 @@ func newBoard(size int) board {
 	return b
 }
 
+// makeMove allows the player to make a move
 func (b *board) makeMove(row, col, player int) {
 	(*b)[row][col] = player
 }
 
+// isMoveInBounds checks if the the move is within the board
 func (b board) isMoveInBounds(row, col int) bool {
 	s := b.size()
+
+	// Check the move to see if row/col are negative or above the maximum index
 	if row < 0 || col < 0 || row >= s || col >= s {
 		return false
 	}
+	// If the move is within the board, return true
 	return true
 }
 
+// size returns the size of the board
 func (b *board) size() int {
 	return len(*b)
 }
 
+// findConnect identifies whether a winning connection has been made
 func (b board) findConnect(length int) (int, bool) {
-	// checking is the player number currently currently found
-	// found is the number of their symbols found
+	// Checking is the player number currently currently found
+	// Found is the number of their symbols found
 	var checking, found int
 
 	// Check horizontal
 	for r := 0; r < b.size(); r++ {
+
+		//Checking resets to 0 to once again look for an empty spot first when switched to a new row
 		checking = 0
 		for c := 0; c < b.size(); c++ {
+
+			// If a full connection isn't possible, stop checking that row
 			if length-found > b.size()-c {
 				break
 			}
 
+			// If the space on the board is different from what was checked previously, set found as one
+			// Also set checking as that players number where all future checks will look for that number
+			// If not, increase the number of the player-numbers found
 			if b[r][c] != checking {
 				found = 1
 				checking = b[r][c]
@@ -50,6 +64,8 @@ func (b board) findConnect(length int) (int, bool) {
 				found++
 			}
 
+			// If enough non-empty consecutive symbols have been found,
+			// Return the player number and that a connection has been made
 			if found == length && checking != 0 {
 				return checking, true
 			}
@@ -60,6 +76,7 @@ func (b board) findConnect(length int) (int, bool) {
 	for c := 0; c < b.size(); c++ {
 		checking = 0
 		for r := 0; r < b.size(); r++ {
+			// If a full connection isn't possible, stop checking that column
 			if length-found > b.size()-r {
 				break
 			}
@@ -71,6 +88,7 @@ func (b board) findConnect(length int) (int, bool) {
 				found++
 			}
 
+			// Returning the player number and that a connection has been made
 			if found == length && checking != 0 {
 				return checking, true
 			}
@@ -83,6 +101,10 @@ func (b board) findConnect(length int) (int, bool) {
 		checking2 := 0
 		found2 := 0
 		for i, j := ind, 0; i < b.size(); i++ {
+
+			// If the space on the board is different from what was checked previously, set found as one
+			// Also set checking as that players number where all future checks will look for that number
+			// If not, increase the number of the player-numbers found
 			if b[i][j] != checking {
 				found = 1
 				checking = b[i][j]
@@ -90,10 +112,15 @@ func (b board) findConnect(length int) (int, bool) {
 				found++
 			}
 
+			// If enough non-empty consecutive symbols have been found,
+			// Return the player number and that a connection has been made
 			if found == length && checking != 0 {
 				return checking, true
 			}
 
+			// If the space on the board is different from what was checked previously in check2, set found2 as one
+			// Also set checking2 as that players number where all future checks will look for that number
+			// If not, increase the number of the player-numbers found(2)
 			if b[j][i] != checking2 {
 				found2 = 1
 				checking2 = b[j][i]
@@ -101,6 +128,7 @@ func (b board) findConnect(length int) (int, bool) {
 				found2++
 			}
 
+			// Return the player number and that a connection has been made
 			if found2 == length && checking2 != 0 {
 				return checking2, true
 			}
@@ -120,6 +148,7 @@ func (b board) findConnect(length int) (int, bool) {
 		bRowInd := b.size() - 1
 		bColInd := ind
 		for {
+			// If a connection is not possible
 			if lRowInd < 0 || bColInd >= b.size() {
 				break
 			}
@@ -131,6 +160,7 @@ func (b board) findConnect(length int) (int, bool) {
 				found++
 			}
 
+			// Return the player number and that a connection has been made
 			if found == length && checking != 0 {
 				return checking, true
 			}
@@ -142,10 +172,12 @@ func (b board) findConnect(length int) (int, bool) {
 				found2++
 			}
 
+			// Return the player number and that a connection has been made
 			if found2 == length && checking2 != 0 {
 				return checking2, true
 			}
 
+			// Increment statements for each row/column index
 			lRowInd--
 			bRowInd--
 			lColInd++
@@ -153,6 +185,7 @@ func (b board) findConnect(length int) (int, bool) {
 		}
 	}
 
+	// If no connection has been made, return blank value and that no connection is possible
 	return 0, false
 }
 
