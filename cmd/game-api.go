@@ -19,7 +19,3 @@ var gameAPICmd = &cobra.Command{
 		}
 	},
 }
-
-func init() {
-	apiCmd.AddCommand(gameAPICmd)
-}
