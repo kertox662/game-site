@@ -75,5 +75,16 @@ func (g *game) makeMove(player, row, col int) error {
 	}
 
 	g.board.makeMove(row, col, player)
+	g.winner = g.checkWinner()
+	g.currentTurn = (g.currentTurn % g.playerCount) + 1 // Increment turn
 	return nil
+}
+
+// checkWinner checks if the game has a winner, and returns
+// their player number. If no winner, return the empty player.
+func (g *game) checkWinner() int {
+	if player, ok := g.board.findConnect(g.connectTarget); ok {
+		return player
+	}
+	return EMPTY_PLAYER
 }

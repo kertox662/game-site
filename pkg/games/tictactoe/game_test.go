@@ -103,12 +103,15 @@ func TestGameMakeMove(t *testing.T) {
 	testBoard.makeMove(2, 2, 1)
 
 	tests := []struct {
-		name   string
-		game   *game
-		player int
-		row    int
-		col    int
-		err    error
+		name           string
+		game           *game
+		player         int
+		row            int
+		col            int
+		err            error
+		expectedTurn   int
+		expectedWinner int
+		expectedBoard  board
 	}{
 		{
 			name: "No error",
@@ -121,10 +124,12 @@ func TestGameMakeMove(t *testing.T) {
 				currentTurn:   1,
 				winner:        EMPTY_PLAYER,
 			},
-			player: 1,
-			row:    2,
-			col:    2,
-			err:    nil,
+			player:        1,
+			row:           2,
+			col:           2,
+			err:           nil,
+			expectedTurn:  2,
+			expectedBoard: testBoard,
 		},
 		{
 			name: "Game is over",
@@ -137,10 +142,12 @@ func TestGameMakeMove(t *testing.T) {
 				currentTurn:   1,
 				winner:        2,
 			},
-			player: 1,
-			row:    3,
-			col:    3,
-			err:    ErrGameConcluded,
+			player:         1,
+			row:            3,
+			col:            3,
+			err:            ErrGameConcluded,
+			expectedTurn:   1,
+			expectedWinner: 2,
 		},
 		{
 			name: "Incorrect Turn",
@@ -153,10 +160,12 @@ func TestGameMakeMove(t *testing.T) {
 				currentTurn:   2,
 				winner:        EMPTY_PLAYER,
 			},
-			player: 1,
-			row:    3,
-			col:    3,
-			err:    ErrIncorrectPlayerTurn,
+			player:         1,
+			row:            3,
+			col:            3,
+			err:            ErrIncorrectPlayerTurn,
+			expectedTurn:   2,
+			expectedWinner: EMPTY_PLAYER,
 		},
 		{
 			name: "Non-empty space",
@@ -169,10 +178,12 @@ func TestGameMakeMove(t *testing.T) {
 				currentTurn:   1,
 				winner:        EMPTY_PLAYER,
 			},
-			player: 1,
-			row:    2,
-			col:    2,
-			err:    ErrNonEmptySpace,
+			player:         1,
+			row:            2,
+			col:            2,
+			err:            ErrNonEmptySpace,
+			expectedTurn:   1,
+			expectedWinner: EMPTY_PLAYER,
 		},
 		{
 			name: "Out of bounds move 1",
@@ -185,10 +196,12 @@ func TestGameMakeMove(t *testing.T) {
 				currentTurn:   1,
 				winner:        EMPTY_PLAYER,
 			},
-			player: 1,
-			row:    3,
-			col:    3,
-			err:    ErrOutOfBounds,
+			player:         1,
+			row:            3,
+			col:            3,
+			err:            ErrOutOfBounds,
+			expectedTurn:   1,
+			expectedWinner: EMPTY_PLAYER,
 		},
 		{
 			name: "Out of bounds move 2",
@@ -201,10 +214,12 @@ func TestGameMakeMove(t *testing.T) {
 				currentTurn:   1,
 				winner:        EMPTY_PLAYER,
 			},
-			player: 1,
-			row:    -1,
-			col:    -2,
-			err:    ErrOutOfBounds,
+			player:         1,
+			row:            -1,
+			col:            -2,
+			err:            ErrOutOfBounds,
+			expectedTurn:   1,
+			expectedWinner: EMPTY_PLAYER,
 		},
 		{
 			name: "Out of bounds move 3",
@@ -217,10 +232,12 @@ func TestGameMakeMove(t *testing.T) {
 				currentTurn:   1,
 				winner:        EMPTY_PLAYER,
 			},
-			player: 1,
-			row:    -1,
-			col:    2,
-			err:    ErrOutOfBounds,
+			player:         1,
+			row:            -1,
+			col:            2,
+			err:            ErrOutOfBounds,
+			expectedTurn:   1,
+			expectedWinner: EMPTY_PLAYER,
 		},
 		{
 			name: "Out of bounds move 4",
@@ -233,10 +250,41 @@ func TestGameMakeMove(t *testing.T) {
 				currentTurn:   1,
 				winner:        EMPTY_PLAYER,
 			},
-			player: 1,
-			row:    1,
-			col:    -1,
-			err:    ErrOutOfBounds,
+			player:         1,
+			row:            1,
+			col:            -1,
+			err:            ErrOutOfBounds,
+			expectedTurn:   1,
+			expectedWinner: EMPTY_PLAYER,
+		},
+		// Player 1 wins tests whether the game updates the winner correctly
+		// The winner should start of as no one, Player 1 will then win along the diagonal
+		{
+			name: "Player 1 wins",
+			game: &game{
+				board: board([][]int{
+					{1, 2, 0},
+					{2, 1, 0},
+					{0, 0, 0}},
+				),
+				boardSize:     3,
+				maxPlayers:    2,
+				playerCount:   2,
+				connectTarget: 3,
+				currentTurn:   1,
+				winner:        EMPTY_PLAYER,
+			},
+			player:         1,
+			row:            2,
+			col:            2,
+			err:            nil,
+			expectedTurn:   2,
+			expectedWinner: 1,
+			expectedBoard: board([][]int{
+				{1, 2, 0},
+				{2, 1, 0},
+				{0, 0, 1}},
+			),
 		},
 	}
 
@@ -244,9 +292,11 @@ func TestGameMakeMove(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			assert := assert.New(t)
 			err := test.game.makeMove(test.player, test.row, test.col)
-			assert.ErrorIs(test.err, err)
+			assert.ErrorIs(test.err, err, err)
 			if err == nil {
-				assert.Equal(testBoard, test.game.board)
+				assert.Equal(test.expectedBoard, test.game.board)
+				assert.Equal(test.expectedTurn, test.game.currentTurn)
+				assert.Equal(test.expectedWinner, test.game.winner)
 			}
 		})
 	}
