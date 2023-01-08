@@ -14,7 +14,8 @@ var _ tictactoeconnect.TicTacToeServiceHandler = (*Server)(nil)
 
 type Server struct {
 	tictactoeconnect.UnimplementedTicTacToeServiceHandler
-	games map[string]*game
+	games    map[string]*game
+	gameList []string
 }
 
 // Function to create a new server
@@ -46,6 +47,8 @@ func (s *Server) CreateGame(ctx context.Context,
 		int(msg.MaxPlayers),
 		int(msg.ConnectTarget),
 	)
+
+	s.gameList = append(s.gameList, id)
 
 	// This returns the game id
 	return &connect.Response[tictactoe.CreateGameResponse]{
@@ -91,4 +94,15 @@ func (s *Server) MakeMove(ctx context.Context,
 	}
 
 	return &connect.Response[tictactoe.MakeMoveResponse]{}, nil
+}
+
+// ListGames implements connect interface
+// It returns a list of all the games that have been created
+func (s *Server) ListGames(ctx context.Context,
+	req *connect.Request[tictactoe.ListGamesRequest]) (*connect.Response[tictactoe.ListGamesResponse], error) {
+	return &connect.Response[tictactoe.ListGamesResponse]{
+		Msg: &tictactoe.ListGamesResponse{
+			GameIds: s.gameList,
+		},
+	}, nil
 }

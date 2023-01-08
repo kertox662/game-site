@@ -356,3 +356,33 @@ func TestServerMakeMove(t *testing.T) {
 		})
 	}
 }
+
+func TestServerListGames(t *testing.T) {
+	assert := assert.New(t)
+	require := require.New(t)
+	tttSrv, client := makeMockServerAndClient()
+
+	// Set up games with IDs "1" and "abc"
+	tttSrv.games["1"] = &game{}
+	tttSrv.games["abc"] = &game{}
+	tttSrv.gameList = []string{"1", "abc"}
+	expectedIds := tttSrv.gameList
+
+	resp, err := client.ListGames(context.Background(), connect_go.NewRequest(&tttproto.ListGamesRequest{}))
+	require.NoError(err)
+	assert.Equal(expectedIds, resp.Msg.GameIds)
+
+	// Create a new game
+	resp2, err := client.CreateGame(context.Background(), connect_go.NewRequest(&tttproto.CreateGameRequest{
+		MaxPlayers:    2,
+		BoardSize:     4,
+		ConnectTarget: 3,
+	}))
+	require.NoError(err)
+	expectedIds = append(expectedIds, resp2.Msg.GameId)
+
+	// Make sure the new game is in the list
+	resp, err = client.ListGames(context.Background(), connect_go.NewRequest(&tttproto.ListGamesRequest{}))
+	require.NoError(err)
+	assert.Equal(expectedIds, resp.Msg.GameIds)
+}
