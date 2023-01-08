@@ -41,8 +41,16 @@ message MakeMoveRequest {
 message MakeMoveResponse {
 }
 
+message ListGamesRequest {
+}
+
+message ListGamesResponse {
+  repeated string game_ids = 1;
+}
+
 service TicTacToeService {
   rpc CreateGame(CreateGameRequest) returns (CreateGameResponse);
   rpc GetGameData(GetGameDataRequest) returns (GetGameDataResponse);
   rpc MakeMove(MakeMoveRequest) returns (MakeMoveResponse);
+  rpc ListGames(ListGamesRequest) returns (ListGamesResponse);
 }
