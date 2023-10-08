@@ -7,8 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/bufbuild/connect-go"
-	connect_go "github.com/bufbuild/connect-go"
+	"connectrpc.com/connect"
 	tttproto "github.com/kertox662/game-site/proto/games/tictactoe"
 	"github.com/kertox662/game-site/proto/games/tictactoe/tictactoeconnect"
 	"github.com/stretchr/testify/assert"
@@ -117,7 +116,7 @@ func TestServerCreateGame(t *testing.T) {
 				ConnectTarget: int32(expectedGame.connectTarget),
 			}
 
-			resp, err := client.CreateGame(context.Background(), &connect_go.Request[tttproto.CreateGameRequest]{
+			resp, err := client.CreateGame(context.Background(), &connect.Request[tttproto.CreateGameRequest]{
 				Msg: req,
 			})
 			if err != nil {
@@ -203,7 +202,7 @@ func TestServerGetGame(t *testing.T) {
 			}
 
 			resp, err := client.GetGameData(context.Background(),
-				&connect_go.Request[tttproto.GetGameDataRequest]{Msg: req},
+				&connect.Request[tttproto.GetGameDataRequest]{Msg: req},
 			)
 			if err != nil {
 				if test.expectedErrCode == 0 {
@@ -336,7 +335,7 @@ func TestServerMakeMove(t *testing.T) {
 			}
 
 			_, err := client.MakeMove(context.Background(),
-				&connect_go.Request[tttproto.MakeMoveRequest]{Msg: &tttproto.MakeMoveRequest{
+				&connect.Request[tttproto.MakeMoveRequest]{Msg: &tttproto.MakeMoveRequest{
 					Move:   test.move,
 					GameId: test.gameId,
 					Player: 1,
@@ -368,12 +367,12 @@ func TestServerListGames(t *testing.T) {
 	tttSrv.gameList = []string{"1", "abc"}
 	expectedIds := tttSrv.gameList
 
-	resp, err := client.ListGames(context.Background(), connect_go.NewRequest(&tttproto.ListGamesRequest{}))
+	resp, err := client.ListGames(context.Background(), connect.NewRequest(&tttproto.ListGamesRequest{}))
 	require.NoError(err)
 	assert.Equal(expectedIds, resp.Msg.GameIds)
 
 	// Create a new game
-	resp2, err := client.CreateGame(context.Background(), connect_go.NewRequest(&tttproto.CreateGameRequest{
+	resp2, err := client.CreateGame(context.Background(), connect.NewRequest(&tttproto.CreateGameRequest{
 		MaxPlayers:    2,
 		BoardSize:     4,
 		ConnectTarget: 3,
@@ -382,7 +381,7 @@ func TestServerListGames(t *testing.T) {
 	expectedIds = append(expectedIds, resp2.Msg.GameId)
 
 	// Make sure the new game is in the list
-	resp, err = client.ListGames(context.Background(), connect_go.NewRequest(&tttproto.ListGamesRequest{}))
+	resp, err = client.ListGames(context.Background(), connect.NewRequest(&tttproto.ListGamesRequest{}))
 	require.NoError(err)
 	assert.Equal(expectedIds, resp.Msg.GameIds)
 }

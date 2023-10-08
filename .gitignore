@@ -14,3 +14,9 @@ game-site
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+
+# Generated Proto files
+*.pb.go
+*.connect.go
+*.pb.ts

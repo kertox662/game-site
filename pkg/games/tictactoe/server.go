@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/bufbuild/connect-go"
+	"connectrpc.com/connect"
 	"github.com/kertox662/game-site/proto/games/tictactoe"
 	"github.com/kertox662/game-site/proto/games/tictactoe/tictactoeconnect"
 	"go.melnyk.org/hufid"
