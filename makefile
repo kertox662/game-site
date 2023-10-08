@@ -6,7 +6,11 @@ build: generate-proto
 
 run: build
 	@echo "Running..."
-	@./bin/$(BINARY_NAME)
+	@./bin/$(BINARY_NAME) api game
+
+test: generate-proto
+	@echo "Testing..."
+	@go test -v ./...
 
 bin:
 	@mkdir -p bin

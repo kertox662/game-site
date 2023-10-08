@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"connectrpc.com/connect"
+	"github.com/kertox662/game-site/proto/games/tictactoe"
 	tttproto "github.com/kertox662/game-site/proto/games/tictactoe"
 	"github.com/kertox662/game-site/proto/games/tictactoe/tictactoeconnect"
 	"github.com/stretchr/testify/assert"
@@ -214,11 +215,17 @@ func TestServerGetGame(t *testing.T) {
 				return
 			}
 			game := test.game
-			assert.Equal(int32(game.playerCount), resp.Msg.GetPlayerCount())
-			assert.Equal(int32(game.currentTurn), resp.Msg.GetCurrentTurn())
-			assert.Equal(int32(game.winner), resp.Msg.GetWinner())
+			expectedMetadata := &tictactoe.GameMetadata{
+				PlayerCount:  int32(game.playerCount),
+				Players:      test.expectedPlayers,
+				CurrentTurn:  int32(game.currentTurn),
+				Winner:       int32(game.winner),
+				MaxPlayers:   int32(game.maxPlayers),
+				ConnectToWin: int32(game.connectTarget),
+				BoardSize:    int32(game.boardSize),
+			}
+			assert.Equal(expectedMetadata, resp.Msg.GetMetadata())
 			assert.Equal(int32(game.boardSize), resp.Msg.GetData().Dimension)
-			assert.Equal(test.expectedPlayers, resp.Msg.GetPlayers())
 
 			data := resp.Msg.GetData()
 			for i, row := range game.board {
@@ -365,11 +372,20 @@ func TestServerListGames(t *testing.T) {
 	tttSrv.games["1"] = &game{}
 	tttSrv.games["abc"] = &game{}
 	tttSrv.gameList = []string{"1", "abc"}
-	expectedIds := tttSrv.gameList
+	expectedMetadata := map[string]*tictactoe.GameMetadata{
+		"1": {
+			Id: "1",
+		},
+		"abc": {
+			Id: "abc",
+		},
+	}
 
 	resp, err := client.ListGames(context.Background(), connect.NewRequest(&tttproto.ListGamesRequest{}))
 	require.NoError(err)
-	assert.Equal(expectedIds, resp.Msg.GameIds)
+	for _, game := range resp.Msg.Games {
+		assert.Equal(expectedMetadata[game.Id], game)
+	}
 
 	// Create a new game
 	resp2, err := client.CreateGame(context.Background(), connect.NewRequest(&tttproto.CreateGameRequest{
@@ -378,10 +394,22 @@ func TestServerListGames(t *testing.T) {
 		ConnectTarget: 3,
 	}))
 	require.NoError(err)
-	expectedIds = append(expectedIds, resp2.Msg.GameId)
+	expectedMetadata[resp2.Msg.GetGameId()] = &tictactoe.GameMetadata{
+		Id:           resp2.Msg.GetGameId(),
+		PlayerCount:  2,
+		MaxPlayers:   2,
+		Players:      []string{"1", "2"},
+		CurrentTurn:  1,
+		Winner:       0,
+		BoardSize:    4,
+		ConnectToWin: 3,
+	}
 
 	// Make sure the new game is in the list
 	resp, err = client.ListGames(context.Background(), connect.NewRequest(&tttproto.ListGamesRequest{}))
 	require.NoError(err)
-	assert.Equal(expectedIds, resp.Msg.GameIds)
+	require.Equal(len(expectedMetadata), len(resp.Msg.Games))
+	for _, game := range resp.Msg.Games {
+		assert.Equal(expectedMetadata[game.Id], game)
+	}
 }

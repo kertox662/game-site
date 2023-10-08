@@ -100,9 +100,15 @@ func (s *Server) MakeMove(ctx context.Context,
 // It returns a list of all the games that have been created
 func (s *Server) ListGames(ctx context.Context,
 	req *connect.Request[tictactoe.ListGamesRequest]) (*connect.Response[tictactoe.ListGamesResponse], error) {
+	games := make([]*tictactoe.GameMetadata, len(s.gameList))
+	for i, id := range s.gameList {
+		games[i] = s.games[id].toProto().Metadata
+		games[i].Id = id
+	}
+
 	return &connect.Response[tictactoe.ListGamesResponse]{
 		Msg: &tictactoe.ListGamesResponse{
-			GameIds: s.gameList,
+			Games: games,
 		},
 	}, nil
 }

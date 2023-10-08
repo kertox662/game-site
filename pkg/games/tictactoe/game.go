@@ -53,11 +53,16 @@ func (g *game) toProto() *tictactoe.GetGameDataResponse {
 	}
 
 	return &tictactoe.GetGameDataResponse{
-		Data:        g.board.toProto(),
-		PlayerCount: int32(g.playerCount),
-		Players:     players,
-		CurrentTurn: int32(g.currentTurn),
-		Winner:      int32(g.winner),
+		Data: g.board.toProto(),
+		Metadata: &tictactoe.GameMetadata{
+			PlayerCount:  int32(g.playerCount),
+			Players:      players,
+			MaxPlayers:   int32(g.maxPlayers),
+			CurrentTurn:  int32(g.currentTurn),
+			Winner:       int32(g.winner),
+			ConnectToWin: int32(g.connectTarget),
+			BoardSize:    int32(g.boardSize),
+		},
 	}
 }
 
