@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const defaultAddr = ":8080"
+const defaultAddr = "localhost:8080"
 
 var gameAPICmd = &cobra.Command{
 	Use:   "game",
