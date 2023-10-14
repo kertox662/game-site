@@ -25,9 +25,8 @@ jobs:
       run: "go install connectrpc.com/connect/cmd/protoc-gen-connect-go@latest\n 
         go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28"
 
-
     - name: Build
-      run: go build -v ./...
+      run: make build
 
     - name: Test
-      run: go test -v ./...
+      run: make test
