@@ -35,7 +35,10 @@ func (pgc *PrintGameCommand) Execute(ctx context.Context, args []string) ([]stri
 		for j := range game.Board {
 			row[j+1] = fmt.Sprintf("%d", game.Board[i][j])
 		}
-		gameTable.AddRow(row)
+		err := gameTable.AddRow(row)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	messages = append(messages, gameTable.String())

@@ -57,12 +57,12 @@ func (c *Console) handleCommand(ctx context.Context, line string) {
 	parts := strings.Split(line, " ")
 	msg, err := c.cmd.Execute(ctx, parts)
 	for _, m := range msg {
-		c.out.Write([]byte(m))
-		c.out.Write([]byte("\n"))
+		_, _ = c.out.Write([]byte(m))
+		_, _ = c.out.Write([]byte("\n"))
 	}
 	if err != nil {
-		c.out.Write([]byte(err.Error()))
-		c.out.Write([]byte("\n"))
+		_, _ = c.out.Write([]byte(err.Error()))
+		_, _ = c.out.Write([]byte("\n"))
 	}
 }
 

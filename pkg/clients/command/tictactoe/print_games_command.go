@@ -22,7 +22,7 @@ func (pgc *PrintGamesCommand) Execute(ctx context.Context, args []string) ([]str
 		"Game Id", "Current Player", "Player Count", "Max Players", "Board Size", "Connect Target",
 	})
 	for id, metadata := range games {
-		gameTable.AddRow([]string{
+		err := gameTable.AddRow([]string{
 			id,
 			fmt.Sprintf("%d", metadata.CurrentPlayer),
 			fmt.Sprintf("%d", metadata.PlayerCount),
@@ -30,6 +30,9 @@ func (pgc *PrintGamesCommand) Execute(ctx context.Context, args []string) ([]str
 			fmt.Sprintf("%d", metadata.BoardSize),
 			fmt.Sprintf("%d", metadata.ConnectTarget),
 		})
+		if err != nil {
+			return nil, err
+		}
 	}
 	messages = append(messages, gameTable.String())
 

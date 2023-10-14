@@ -3,7 +3,6 @@ package tictactoe
 import (
 	"math/rand"
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -496,7 +495,6 @@ func BenchmarkBoardConnect(b *testing.B) {
 
 func BenchmarkRandomBoard(b *testing.B) {
 	board := newBoard(30)
-	rand.Seed(time.Now().Unix())
 	for i := 0; i < 30; i++ {
 		for j := 0; j < 30; j++ {
 			board.makeMove(i, j, rand.Int()%4+1) //nolint:gosec

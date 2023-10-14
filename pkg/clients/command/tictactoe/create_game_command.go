@@ -3,7 +3,6 @@ package tictactoe
 import (
 	"context"
 	"fmt"
-	"strconv"
 
 	"connectrpc.com/connect"
 	"github.com/kertox662/game-site/pkg/clients/command"
@@ -22,26 +21,26 @@ func (cgc *CreateGameCommand) Execute(ctx context.Context, args []string) ([]str
 		return nil, fmt.Errorf("expected 3 arguments, got %d", len(args))
 	}
 
-	maxPlayers, err := strconv.Atoi(args[0])
+	maxPlayers, err := parseInt32(args[2])
 	if err != nil {
 		return nil, fmt.Errorf("invalid max players: %w", err)
 	}
 
-	boardSize, err := strconv.Atoi(args[1])
+	boardSize, err := parseInt32(args[2])
 	if err != nil {
 		return nil, fmt.Errorf("invalid board size: %w", err)
 	}
 
-	connectTarget, err := strconv.Atoi(args[2])
+	connectTarget, err := parseInt32(args[2])
 	if err != nil {
 		return nil, fmt.Errorf("invalid connect target: %w", err)
 	}
 
 	req := &connect.Request[tictactoe.CreateGameRequest]{
 		Msg: &tictactoe.CreateGameRequest{
-			MaxPlayers:    int32(maxPlayers),
-			BoardSize:     int32(boardSize),
-			ConnectTarget: int32(connectTarget),
+			MaxPlayers:    maxPlayers,
+			BoardSize:     boardSize,
+			ConnectTarget: connectTarget,
 		},
 	}
 
@@ -60,9 +59,9 @@ func (cgc *CreateGameCommand) Execute(ctx context.Context, args []string) ([]str
 	metadata := gameMetadata{
 		CurrentPlayer: 0,
 		PlayerCount:   0,
-		MaxPlayers:    int32(maxPlayers),
-		BoardSize:     int32(boardSize),
-		ConnectTarget: int32(connectTarget),
+		MaxPlayers:    maxPlayers,
+		BoardSize:     boardSize,
+		ConnectTarget: connectTarget,
 	}
 
 	existing, ok := command.GetStateData[map[string]gameMetadata](cgc.State(), knownGamesKey)

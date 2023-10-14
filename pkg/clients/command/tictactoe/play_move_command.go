@@ -3,7 +3,6 @@ package tictactoe
 import (
 	"context"
 	"fmt"
-	"strconv"
 
 	"connectrpc.com/connect"
 	"github.com/kertox662/game-site/pkg/clients/command"
@@ -23,16 +22,16 @@ func (cgc *PlayMoveCommand) Execute(ctx context.Context, args []string) ([]strin
 	}
 
 	gameId := args[0]
-	player, err := strconv.Atoi(args[1])
+	player, err := parseInt32(args[1])
 	if err != nil {
 		return messages, err
 	}
 
-	row, err := strconv.Atoi(args[2])
+	row, err := parseInt32(args[2])
 	if err != nil {
 		return messages, err
 	}
-	col, err := strconv.Atoi(args[3])
+	col, err := parseInt32(args[3])
 	if err != nil {
 		return messages, err
 	}
@@ -40,10 +39,10 @@ func (cgc *PlayMoveCommand) Execute(ctx context.Context, args []string) ([]strin
 	req := &connect.Request[tictactoe.MakeMoveRequest]{
 		Msg: &tictactoe.MakeMoveRequest{
 			GameId: gameId,
-			Player: int32(player),
+			Player: player,
 			Move: &tictactoe.Move{
-				Row: int32(row),
-				Col: int32(col),
+				Row: row,
+				Col: col,
 			},
 		},
 	}
@@ -53,7 +52,7 @@ func (cgc *PlayMoveCommand) Execute(ctx context.Context, args []string) ([]strin
 		return messages, err
 	}
 
-	messages = append(messages, fmt.Sprintf("Move successful"))
+	messages = append(messages, "Move successful")
 	return messages, nil
 }
 

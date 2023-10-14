@@ -23,3 +23,12 @@ linters-settings:
   lll:
     line-length: 120
     tab-width: 4
+
+run:
+  timeout: "1m"
+  issue-exit-code: 1
+  tests: true
+  skip-dirs:
+    - "proto"
+    - "/usr"
+  go: "1.21"
