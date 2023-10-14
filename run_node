@@ -1,0 +1,1 @@
+docker run --rm -v $(pwd)/webapp:/app -v $(pwd)/proto:/app/proto -p 8080:5173 -it node:14-alpine sh
