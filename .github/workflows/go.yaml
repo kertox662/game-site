@@ -22,8 +22,8 @@ jobs:
         go-version: 1.21
 
     - name: Download protobuf plugins
-      run: "go install connectrpc.com/connect/cmd/protoc-gen-connect-go@latest 
-        google.golang.org/protobuf/cmd/protoc-gen-go@v1.28"
+      run: "go install connectrpc.com/connect/cmd/protoc-gen-connect-go@latest\n 
+        go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28"
 
 
     - name: Build
